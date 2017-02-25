@@ -4,12 +4,9 @@ title: About
 permalink: /about/
 ---
 
-Some information about you!
-
+一个懒洋洋的码农︿(~︶~)︿
 ### More Information
-
-A place to include any other types of information that you'd like to include about yourself.
-
+慵懒午后,一杯咖啡,一本书,一首歌
 ### Contact me
 
-[email@domain.com](mailto:email@domain.com)
+[suliang1989@foxmail.com](mailto:suliang1989@foxmail.com)
