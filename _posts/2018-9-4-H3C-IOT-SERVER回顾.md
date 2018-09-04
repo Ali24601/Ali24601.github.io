@@ -64,4 +64,40 @@ title: 物联网报文解析工具回顾
 
 调用`MsgWaitForMultipleObjects`边接收处理线程的消息（提示界面线程更新显示），边等待线程自然退出。收到处理线程的消息之后，依次调用`PeekMessage`、`TranslateMessage`、`DispatchMessage`把消息派发给指定对话框，完成界面更新。
 
-> MsgWaitForMultipleObjects流程待更
+~~~C++
+void CMyDlg::WaitExitThread(HANDLE *p_handle,unsigned int thread_count)
+{
+    DWORD dwRet = 0;
+    DWORD count_left = thread_count;
+    MSG msg;
+    while(true)
+    {
+        dwRet = MsgWaitForMultipleObjects(count_left,p_handle,FALSE,INFINITE,QS_ALLINPUT);
+        if(dwRet == WAIT_OBJECT_0+count_left)
+        {
+            //处理消息
+            while(PeekMessage(&msg,NULL,0,0,PM_REMOVE))
+            {
+                TranslateMessage(&msg);
+                DispatchMessage(&msg);
+            }
+        }
+        else if (dwRet >=WAIT_OBJECT_0&&dwRet<WAIT_OBJECT_0+count_left)
+        {
+            //有线程退出
+            int index = dwRet - WAIT_OBJECT_0;
+            CloseHandle(p_handle[index]);
+            if(index != count_left-1)
+                p_handle[index]=p_handle[count_left-1];
+            p_handle[count_left-1]=NULL;
+            if(--count_left==0)
+                break;
+        }
+        else
+        {
+            DWORD dErrCode = GetLastError();
+            break;
+        }
+    }
+}
+~~~
